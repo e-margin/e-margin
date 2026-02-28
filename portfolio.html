@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>武田昌之 / E-margin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Inconsolata:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0e;
+    --surface: #161616;
+    --border: #2a2a2a;
+    --text: #e8e4dc;
+    --muted: #6b6560;
+    --accent: #c8a96e;
+    --accent-dim: #8a7048;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 300;
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  /* ── Nav ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 3rem;
+    background: rgba(14,14,14,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Inconsolata', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Inconsolata', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  /* ── Hero ── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 4rem 3rem 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 80px 80px;
+    opacity: 0.3;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 100%);
+  }
+
+  .hero-label {
+    font-family: 'Inconsolata', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+
+  .hero-catch {
+    font-family: 'Shippori Mincho', serif;
+    font-size: clamp(3rem, 7vw, 6.5rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.4s;
+  }
+
+  .hero-catch em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    max-width: 560px;
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.9;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.6s;
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 2rem;
+    right: 3rem;
+    font-family: 'Inconsolata', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    opacity: 0;
+    animation: fadeIn 1s ease forwards 1.2s;
+  }
+
+  .hero-scroll::before {
+    content: '';
+    width: 1px;
+    height: 48px;
+    background: var(--accent-dim);
+    animation: lineGrow 1s ease forwards 1.4s;
+    transform-origin: top;
+    transform: scaleY(0);
+  }
+
+  @keyframes lineGrow { to { transform: scaleY(1); } }
+
+  /* ── Section base ── */
+  section {
+    padding: 7rem 3rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Inconsolata', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.25em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 3.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    max-width: 120px;
+  }
+
+  /* ── About ── */
+  #about {
+    border-top: 1px solid var(--border);
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  .about-meta {
+    position: sticky;
+    top: 8rem;
+  }
+
+  .about-name {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+
+  .about-title {
+    font-family: 'Inconsolata', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 2.5rem;
+  }
+
+  .about-tag {
+    display: inline-block;
+    font-family: 'Inconsolata', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 0.3rem 0.75rem;
+    margin: 0.2rem;
+    border-radius: 2px;
+  }
+
+  .about-body p {
+    font-size: 0.95rem;
+    color: #b8b4ae;
+    margin-bottom: 1.5rem;
+    line-height: 1.95;
+  }
+
+  .about-body p strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* ── Works ── */
+  #works {
+    border-top: 1px solid var(--border);
+  }
+
+  .works-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5px;
+    background: var(--border);
+    border: 1.5px solid var(--border);
+  }
+
+  .work-card {
+    background: var(--bg);
+    padding: 2.5rem;
+    transition: background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .work-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 0;
+    background: var(--accent);
+    transition: height 0.3s ease;
+  }
+
+  .work-card:hover { background: var(--surface); }
+  .work-card:hover::before { height: 100%; }
+
+  .work-num {
+    font-family: 'Inconsolata', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--accent-dim);
+    margin-bottom: 1.5rem;
+  }
+
+  .work-title {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+  }
+
+  .work-en {
+    font-family: 'Inconsolata', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 1.25rem;
+  }
+
+  .work-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.85;
+  }
+
+  /* ── Skills ── */
+  #skills {
+    border-top: 1px solid var(--border);
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 2rem;
+  }
+
+  .skill-group h3 {
+    font-family: 'Inconsolata', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .skill-group ul {
+    list-style: none;
+  }
+
+  .skill-group li {
+    font-size: 0.88rem;
+    color: var(--muted);
+    padding: 0.35rem 0;
+    border-bottom: 1px solid rgba(42,42,42,0.5);
+    transition: color 0.2s;
+  }
+
+  .skill-group li:hover { color: var(--text); }
+
+  /* ── Contact ── */
+  #contact {
+    border-top: 1px solid var(--border);
+    text-align: center;
+    padding-bottom: 8rem;
+  }
+
+  .contact-heading {
+    font-family: 'Shippori Mincho', serif;
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+
+  .contact-sub {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-bottom: 3rem;
+  }
+
+  .contact-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .contact-link {
+    font-family: 'Inconsolata', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    padding: 0.85rem 2rem;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .contact-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .contact-link.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+  }
+
+  .contact-link.primary:hover {
+    background: transparent;
+    color: var(--accent);
+  }
+
+  /* ── Footer ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  footer span {
+    font-family: 'Inconsolata', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { gap: 1.5rem; }
+    section { padding: 5rem 1.5rem; }
+    #hero { padding: 0 1.5rem 4rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .about-meta { position: static; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">E-margin</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#works">Creative</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#connect">Connect</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <p class="hero-label">武田昌之 / Masayuki Takeda</p>
+  <h1 class="hero-catch">現象を見て、<br><em>構造を出す。</em></h1>
+  <p class="hero-sub">
+    医療もマーケティングもシステム設計も、やっていることは同じだ。<br>
+    違和感を起点に、破綻のない構造を作る。
+  </p>
+  <div class="hero-scroll">Scroll</div>
+</section>
+
+<!-- About -->
+<section id="about">
+  <p class="section-label reveal">About</p>
+  <div class="about-grid">
+    <div class="about-meta reveal">
+      <p class="about-name">武田昌之</p>
+      <p class="about-title">Designer / Engineer / E-margin</p>
+      <div style="margin-top: 1.5rem;">
+        <span class="about-tag">設計</span>
+        <span class="about-tag">個人開発</span>
+        <span class="about-tag">医療</span>
+        <span class="about-tag">マーケティング</span>
+      </div>
+    </div>
+    <div class="about-body reveal">
+      <p>
+        <strong>構造が見えすぎる人間だ。</strong>
+        治療を受けながら術者の手技を分析し、ツールを使いながらその設計の欠陥を見つける。「合わない」という違和感が起点で、その正体を掴むまで考え続ける。
+      </p>
+      <p>
+        1987年、京都生まれ。最初のキャリアは医療だった。柔道整復師と鍼灸師の国家資格を取得し、院長職として整骨院の運営を任された。来院数の少ない院で、カルテ数に対する来院頻度を高く維持した。治療の技術を追い求めていたが、業界の構造的な限界が見えた。治療技術を上げることが疎まれる環境に、長くいる理由はなかった。
+      </p>
+      <p>
+        業界を観察して気づいたのは、腕のある治療師が開業しても潰れる理由だった。マーケティングと経営の不在。ならば先にそこを学ぼうと、IT企業のWebマーケティング部門に転じた。ところが配属先は代理店の提案に判を押すだけの仕事で、自分のやることがなかった。だから余白を埋め始めた。クリエイティブ制作、Salesforce改善、Excel自動化、サイト修正。気づけばそれがITと呼ばれるようになっていた。
+      </p>
+      <p>
+        現職では事業推進リーダーとして新会社の戦略を担いながら、自分で始めた採用支援ツールが社内標準となり、SaaSとしてのローンチが決まった。外注見積もりで1,500万円・5ヶ月と試算されたシステムを、約20日で機能面をほぼ完成させた。
+      </p>
+      <p>
+        屋号「E-margin」の由来は、余白を埋めることが自分の仕事だと気づいたからだ。余白があると気持ち悪い。だから埋める。その行動が、結果として価値になってきた。
+      </p>
+      <p>
+        現在の開発スタイルの核心は、<strong>設計にある</strong>。要件定義、テーブル設計、工程管理を精密に詰め、実装をAIに委任する。感覚でAIに投げるバイブコーディングとは、ステージが違う。AIが判断できる状態を作ることが、自分の仕事だと思っている。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Works: Creative -->
+<section id="works">
+  <p class="section-label reveal">Creative</p>
+  <div class="works-grid">
+
+    <div class="work-card reveal">
+      <p class="work-num">01</p>
+      <h3 class="work-title">黄昏書架<br>―声の本棚―</h3>
+      <p class="work-en">Tasogare Shoka</p>
+      <p class="work-desc">下積み中の声優が著作権切れの文学作品を朗読し、ユーザーはその声で本を聴く。声優とユーザーの双方に場を提供するオーディオブックプラットフォーム。</p>
+    </div>
+
+    <div class="work-card reveal">
+      <p class="work-num">02</p>
+      <h3 class="work-title">anoco</h3>
+      <p class="work-en">あの子の声で君を呼ぶ</p>
+      <p class="work-desc">推しの声優に、自分だけのボイスを依頼できるアプリ。声優・事務所・ユーザーの三者が成立する収益構造を設計した。</p>
+    </div>
+
+    <div class="work-card reveal">
+      <p class="work-num">03</p>
+      <h3 class="work-title">SHIORI</h3>
+      <p class="work-en">哲学ADV</p>
+      <p class="work-desc">ギャルゲーの文法を哲学的に転倒させるビジュアルノベル。「定義」と「自我」は別物であるというテーゼを、ゲームシステムそのもので体現する。</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- Works: Tools -->
+<section id="tools" style="padding-top: 0;">
+  <p class="section-label reveal">Tools</p>
+  <div class="works-grid">
+
+    <div class="work-card reveal">
+      <p class="work-num">04</p>
+      <h3 class="work-title">Fumuly</h3>
+      <p class="work-en">封筒無理ーを解決する</p>
+      <p class="work-desc">写真を撮るだけで封筒の内容をAIが解析・分類するPWA。ADHD傾向があり書類管理が困難なユーザーを対象に、「熟読しなくていい」体験を設計する。</p>
+    </div>
+
+    <div class="work-card reveal">
+      <p class="work-num">05</p>
+      <h3 class="work-title">Melogs</h3>
+      <p class="work-en">yolog / Nyolog / Solog</p>
+      <p class="work-desc">症状・生活習慣の自己記録ブランド。睡眠（yolog）・頻尿（Nyolog）・その他症状（Solog）を横断的に記録し、医療機関への受診時に活用できるレポートを出力する。melogs.comでサブドメイン展開予定。</p>
+    </div>
+
+    <div class="work-card reveal">
+      <p class="work-num">06</p>
+      <h3 class="work-title">profilum</h3>
+      <p class="work-en">Personal Profiling</p>
+      <p class="work-desc">自己認知のワークスペース。「あなたは○○タイプです」ではなく、自分の構造を理解するための場所。カテゴリを横断した関係性分析で、ラベルではなく文脈を出力する。</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- Skills -->
+<section id="skills">
+  <p class="section-label reveal">Skills</p>
+  <div class="skills-grid">
+    <div class="skill-group reveal">
+      <h3>設計</h3>
+      <ul>
+        <li>要件定義</li>
+        <li>テーブル設計</li>
+        <li>AI実装委任スタイル</li>
+        <li>工程管理</li>
+        <li>事業戦略立案</li>
+      </ul>
+    </div>
+    <div class="skill-group reveal">
+      <h3>開発</h3>
+      <ul>
+        <li>React / Next.js</li>
+        <li>Express.js</li>
+        <li>PostgreSQL / Supabase</li>
+      </ul>
+    </div>
+    <div class="skill-group reveal">
+      <h3>マーケティング</h3>
+      <ul>
+        <li>Google / Yahoo / Meta 広告運用</li>
+        <li>SEO</li>
+        <li>Salesforce 構築・運用</li>
+      </ul>
+    </div>
+    <div class="skill-group reveal">
+      <h3>医療</h3>
+      <ul>
+        <li>柔道整復師</li>
+        <li>鍼灸師</li>
+        <li>院長・保険請求業務</li>
+      </ul>
+    </div>
+    <div class="skill-group reveal">
+      <h3>デザイン</h3>
+      <ul>
+        <li>Illustrator</li>
+        <li>Photoshop</li>
+        <li>Lightroom</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Connect -->
+<section id="connect">
+  <p class="section-label reveal">Connect</p>
+  <div class="contact-links reveal">
+    <a href="https://note.com/e_margin" class="contact-link primary" target="_blank" rel="noopener">Note</a>
+    <a href="https://x.com/e_margin_works" class="contact-link" target="_blank" rel="noopener">X</a>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 武田昌之 / E-margin</span>
+  <span>Masayuki Takeda</span>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
