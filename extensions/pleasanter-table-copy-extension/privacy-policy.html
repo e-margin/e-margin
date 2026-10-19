@@ -151,10 +151,6 @@
     </thead>
     <tbody>
       <tr>
-        <td><code>scripting</code> / <code>activeTab</code></td>
-        <td>現在のタブに対して、選択レコードを読み取るスクリプトを実行するため</td>
-      </tr>
-      <tr>
         <td><code>clipboardWrite</code></td>
         <td>コピー結果をクリップボードに書き込むため</td>
       </tr>
@@ -164,7 +160,7 @@
       </tr>
       <tr>
         <td>ホスト権限 (<code>https://manage.rikutera.jp/*</code>)</td>
-        <td>対象サイトのグリッド要素を読み取るため</td>
+        <td>対象サイトのグリッド要素を読み取り、ボタンUIを挿入するため</td>
       </tr>
     </tbody>
   </table>
@@ -207,8 +203,8 @@
       <li>The extension runs only on <code>https://manage.rikutera.jp/*</code>.</li>
     </ul>
     <p>
-      Permissions (<code>scripting</code>, <code>activeTab</code>, <code>clipboardWrite</code>,
-      <code>storage</code>, and host access to <code>manage.rikutera.jp</code>)
+      Permissions (<code>clipboardWrite</code>, <code>storage</code>,
+      and host access to <code>manage.rikutera.jp</code>)
       are used solely to deliver the extension's core functionality.
     </p>
   </div>
